@@ -20,7 +20,15 @@ function Calculator() {
     }
   };
 
+  const normalizeOp = (op) => {
+    if (op === '×' || op === 'x' || op === 'X') return '*';
+    if (op === '÷') return '/';
+    if (op === '−' || op === '—' || op === '–') return '-';
+    return op;
+  };
+
   const handleOperation = (nextOperation) => {
+    const op = normalizeOp(nextOperation);
     const inputValue = parseFloat(display);
 
     if (previousValue === null) {
@@ -32,18 +40,16 @@ function Calculator() {
     }
 
     setWaitingForOperand(true);
-    setOperation(nextOperation);
+    setOperation(op);
   };
 
   const handleDecimal = () => {
-    // If we're waiting for the next operand, start fresh with "0."
     if (waitingForOperand) {
       setDisplay('0.');
       setWaitingForOperand(false);
       return;
     }
 
-    // Prevent multiple decimals in the current number
     if (!display.includes('.')) {
       setDisplay(display + '.');
     }
@@ -53,6 +59,13 @@ function Calculator() {
     const value = parseFloat(display);
     if (!Number.isNaN(value)) {
       setDisplay(String(value / 100));
+    }
+  };
+
+  const handleToggleSign = () => {
+    const value = parseFloat(display);
+    if (!Number.isNaN(value)) {
+      setDisplay(String(value * -1));
     }
   };
 
@@ -78,7 +91,7 @@ function Calculator() {
       const result = calculate(previousValue, inputValue, operation);
       const historyItem = `${previousValue} ${operation} ${inputValue} = ${result}`;
 
-      setHistory(prev => [historyItem, ...prev].slice(0, 10)); // Keep last 10
+      setHistory(prev => [historyItem, ...prev].slice(0, 10));
       setDisplay(String(result));
       setPreviousValue(null);
       setOperation(null);
@@ -109,7 +122,6 @@ function Calculator() {
     const audioPath = process.env.PUBLIC_URL + '/click.mp3';
     const audio = new Audio(audioPath);
     audio.play().catch(() => {
-      // Fallback to Web Audio beep if audio file isn't available or autoplay is blocked
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const o = ctx.createOscillator();
@@ -135,7 +147,9 @@ function Calculator() {
         handleNumber(parseInt(key, 10));
       } else if (key === '.') {
         handleDecimal();
-      } else if (key === '+' || key === '-' || key === '*' || key === '/') {
+      } else if (
+        key === '+' || key === '-' || key === '*' || key === '/' || key === 'x' || key === 'X' || key === '×' || key === '−'
+      ) {
         handleOperation(key);
       } else if (key === 'Enter' || key === '=') {
         handleEquals();
@@ -148,58 +162,71 @@ function Calculator() {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [display, previousValue, operation, waitingForOperand, handleNumber, handleDecimal, handleOperation, handleEquals, handleClear, handleBackspace]);
+  }, [display, previousValue, operation, waitingForOperand]);
 
   return (
     <div className={`calculator-container ${theme}`}>
       <button onClick={() => { playSound(); toggleTheme(); }} className="theme-toggle">
         {theme === 'dark' ? '☀️' : '🌙'}
       </button>
+      
       <div className="calculator">
-        <div className="display">{display}</div>
+        <div className="display-section">
+          <div className="expression">
+            {previousValue !== null && operation ? `${previousValue} ${operation === '*' ? '×' : operation === '/' ? '÷' : operation === '-' ? '−' : operation}` : ''}
+          </div>
+          <div className="display">{display}</div>
+        </div>
+
         <div className="buttons">
-<button onClick={() => { playSound(); handleClear(); }} className="btn clear">AC</button>
-        <button onClick={() => { playSound(); handleBackspace(); }} className="btn">⌫</button>
-        <button className="btn">+/-</button>
-        <button onClick={() => { playSound(); handlePercentage(); }} className="btn">%</button>
-        <button onClick={() => { playSound(); handleOperation('/'); }} className="btn operator">÷</button>
+          <button onClick={() => { playSound(); handleClear(); }} className="btn function">AC</button>
+          <button onClick={() => { playSound(); handleBackspace(); }} className="btn function">⌫</button>
+          <button onClick={() => { playSound(); handleToggleSign(); }} className="btn function">+/-</button>
+          <button onClick={() => { playSound(); handleOperation('/'); }} className="btn operator">÷</button>
           
-          {[7, 8, 9].map(num => (
-            <button key={num} onClick={() => handleNumber(num)} className="btn">
-              {num}
-            </button>
-          ))}
+          <button onClick={() => { playSound(); handleNumber(7); }} className="btn number">7</button>
+          <button onClick={() => { playSound(); handleNumber(8); }} className="btn number">8</button>
+          <button onClick={() => { playSound(); handleNumber(9); }} className="btn number">9</button>
           <button onClick={() => { playSound(); handleOperation('*'); }} className="btn operator">×</button>
           
-          {[4, 5, 6].map(num => (
-            <button key={num} onClick={() => handleNumber(num)} className="btn">
-              {num}
-            </button>
-          ))}
-          <button onClick={() => { playSound(); handleOperation('-'); }} className="btn operator">-</button>
+          <button onClick={() => { playSound(); handleNumber(4); }} className="btn number">4</button>
+          <button onClick={() => { playSound(); handleNumber(5); }} className="btn number">5</button>
+          <button onClick={() => { playSound(); handleNumber(6); }} className="btn number">6</button>
+          <button onClick={() => { playSound(); handleOperation('-'); }} className="btn operator">−</button>
           
-          {[1, 2, 3].map(num => (
-            <button key={num} onClick={() => handleNumber(num)} className="btn">
-              {num}
-            </button>
-          ))}
-        <button onClick={() => { playSound(); handleOperation('+'); }} className="btn operator">+</button>
-        
-        <button onClick={() => { playSound(); handleNumber(0); }} className="btn zero">0</button>
-        <button onClick={() => { playSound(); handleDecimal(); }} className="btn">.</button>
-        <button onClick={() => { playSound(); handleEquals(); }} className="btn equals">=</button>
-        <button onClick={() => { playSound(); setIsScientific(!isScientific); }} className="btn mode-toggle">
-          {isScientific ? 'Basic' : 'Scientific'}
-        </button>
+          <button onClick={() => { playSound(); handleNumber(1); }} className="btn number">1</button>
+          <button onClick={() => { playSound(); handleNumber(2); }} className="btn number">2</button>
+          <button onClick={() => { playSound(); handleNumber(3); }} className="btn number">3</button>
+          <button onClick={() => { playSound(); handleOperation('+'); }} className="btn operator">+</button>
+          
+          <button onClick={() => { playSound(); handlePercentage(); }} className="btn function">%</button>
+          <button onClick={() => { playSound(); handleNumber(0); }} className="btn number">0</button>
+          <button onClick={() => { playSound(); handleDecimal(); }} className="btn number">.</button>
+          <button onClick={() => { playSound(); handleEquals(); }} className="btn equals">=</button>
         </div>
+
+        <button onClick={() => { playSound(); setIsScientific(!isScientific); }} className="mode-toggle">
+          <span className="mode-icon">{isScientific ? '📐' : '🔬'}</span>
+          {isScientific ? 'Basic Mode' : 'Scientific Mode'}
+        </button>
+
         {isScientific && <ScientificCalculator display={display} setDisplay={setDisplay} playSound={playSound} />}
       </div>
+
       {history.length > 0 && (
         <div className="history">
-          <h3>History</h3>
-          {history.map((item, index) => (
-            <div key={index} className="history-item">{item}</div>
-          ))}
+          <div className="history-header">
+            <h3>History</h3>
+            <button onClick={() => setHistory([])} className="clear-history">Clear</button>
+          </div>
+          <div className="history-list">
+            {history.map((item, index) => (
+              <div key={index} className="history-item">
+                <span className="history-number">{index + 1}</span>
+                {item}
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
