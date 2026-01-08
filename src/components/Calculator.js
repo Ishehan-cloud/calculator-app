@@ -6,6 +6,7 @@ function Calculator() {
   const [previousValue, setPreviousValue] = useState(null);
   const [operation, setOperation] = useState(null);
   const [waitingForOperand, setWaitingForOperand] = useState(false);
+  const [history, setHistory] = useState([]);
 
   const handleNumber = (num) => {
     if (waitingForOperand) {
@@ -65,6 +66,9 @@ function Calculator() {
 
     if (previousValue !== null && operation) {
       const result = calculate(previousValue, inputValue, operation);
+      const historyItem = `${previousValue} ${operation} ${inputValue} = ${result}`;
+
+      setHistory(prev => [historyItem, ...prev].slice(0, 10)); // Keep last 10
       setDisplay(String(result));
       setPreviousValue(null);
       setOperation(null);
@@ -111,40 +115,50 @@ function Calculator() {
   }, [display, previousValue, operation, waitingForOperand, handleNumber, handleDecimal, handleOperation, handleEquals, handleClear, handleBackspace]);
 
   return (
-    <div className="calculator">
-      <div className="display">{display}</div>
-      <div className="buttons">
-        <button onClick={handleClear} className="btn clear">AC</button>
-        <button onClick={handleBackspace} className="btn">⌫</button>
-        <button className="btn">+/-</button>
-        <button className="btn">%</button>
-        <button onClick={() => handleOperation('/')} className="btn operator">÷</button>
-        
-        {[7, 8, 9].map(num => (
-          <button key={num} onClick={() => handleNumber(num)} className="btn">
-            {num}
-          </button>
-        ))}
-        <button onClick={() => handleOperation('*')} className="btn operator">×</button>
-        
-        {[4, 5, 6].map(num => (
-          <button key={num} onClick={() => handleNumber(num)} className="btn">
-            {num}
-          </button>
-        ))}
-        <button onClick={() => handleOperation('-')} className="btn operator">-</button>
-        
-        {[1, 2, 3].map(num => (
-          <button key={num} onClick={() => handleNumber(num)} className="btn">
-            {num}
-          </button>
-        ))}
-        <button onClick={() => handleOperation('+')} className="btn operator">+</button>
-        
-        <button onClick={() => handleNumber(0)} className="btn zero">0</button>
-        <button onClick={handleDecimal} className="btn">.</button>
-        <button onClick={handleEquals} className="btn equals">=</button>
+    <div className="calculator-container">
+      <div className="calculator">
+        <div className="display">{display}</div>
+        <div className="buttons">
+          <button onClick={handleClear} className="btn clear">AC</button>
+          <button onClick={handleBackspace} className="btn">⌫</button>
+          <button className="btn">+/-</button>
+          <button className="btn">%</button>
+          <button onClick={() => handleOperation('/')} className="btn operator">÷</button>
+          
+          {[7, 8, 9].map(num => (
+            <button key={num} onClick={() => handleNumber(num)} className="btn">
+              {num}
+            </button>
+          ))}
+          <button onClick={() => handleOperation('*')} className="btn operator">×</button>
+          
+          {[4, 5, 6].map(num => (
+            <button key={num} onClick={() => handleNumber(num)} className="btn">
+              {num}
+            </button>
+          ))}
+          <button onClick={() => handleOperation('-')} className="btn operator">-</button>
+          
+          {[1, 2, 3].map(num => (
+            <button key={num} onClick={() => handleNumber(num)} className="btn">
+              {num}
+            </button>
+          ))}
+          <button onClick={() => handleOperation('+')} className="btn operator">+</button>
+          
+          <button onClick={() => handleNumber(0)} className="btn zero">0</button>
+          <button onClick={handleDecimal} className="btn">.</button>
+          <button onClick={handleEquals} className="btn equals">=</button>
+        </div>
       </div>
+      {history.length > 0 && (
+        <div className="history">
+          <h3>History</h3>
+          {history.map((item, index) => (
+            <div key={index} className="history-item">{item}</div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
