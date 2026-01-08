@@ -1,4 +1,6 @@
-# Getting Started with Create React App
+# Calculator App 🧮
+
+A sleek calculator built with React — supports basic arithmetic, scientific functions, history, theming, and responsive UI.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
