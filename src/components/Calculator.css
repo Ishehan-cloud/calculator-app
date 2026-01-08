@@ -1,3 +1,54 @@
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .calculator {
+    max-width: 100%;
+    margin: 20px;
+    padding: 15px;
+  }
+
+  .display {
+    font-size: 2rem;
+    padding: 20px;
+    min-height: 60px;
+  }
+
+  .btn {
+    padding: 20px;
+    font-size: 1.2rem;
+  }
+
+  .buttons {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .calculator {
+    margin: 10px;
+    padding: 10px;
+  }
+
+  .display {
+    font-size: 1.5rem;
+    padding: 15px;
+  }
+
+  .btn {
+    padding: 15px;
+    font-size: 1rem;
+  }
+
+  .buttons {
+    gap: 5px;
+  }
+}
+
+/* Tablet */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .calculator {
+    max-width: 500px;
+  }
+}
 .calculator {
   max-width: 400px;
   margin: 50px auto;
@@ -24,4 +75,114 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
+}
+.calculator-container.light {
+  background: #f5f5f5;
+}
+
+.calculator-container.light .calculator {
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.calculator-container.light .display {
+  background: #e8e8e8;
+  color: #000;
+}
+
+.calculator-container.light .btn {
+  background: #e0e0e0;
+  color: #000;
+}
+
+.calculator-container.light .btn:hover {
+  background: #d0d0d0;
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+/* Smooth Animations */
+.calculator {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.display {
+  transition: all 0.3s ease;
+}
+
+.btn {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+.history-item {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Hover effects */
+.btn:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Number input animation */
+.display {
+  animation: pulse 0.1s ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
 }
