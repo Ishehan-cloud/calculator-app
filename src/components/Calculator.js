@@ -79,11 +79,20 @@ function Calculator() {
     setWaitingForOperand(false);
   };
 
+  const handleBackspace = () => {
+    if (display.length > 1) {
+      setDisplay(display.slice(0, -1));
+    } else {
+      setDisplay('0');
+    }
+  };
+
   return (
     <div className="calculator">
       <div className="display">{display}</div>
       <div className="buttons">
         <button onClick={handleClear} className="btn clear">AC</button>
+        <button onClick={handleBackspace} className="btn">⌫</button>
         <button className="btn">+/-</button>
         <button className="btn">%</button>
         <button onClick={() => handleOperation('/')} className="btn operator">÷</button>
