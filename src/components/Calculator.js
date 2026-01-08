@@ -72,11 +72,18 @@ function Calculator() {
     }
   };
 
+  const handleClear = () => {
+    setDisplay('0');
+    setPreviousValue(null);
+    setOperation(null);
+    setWaitingForOperand(false);
+  };
+
   return (
     <div className="calculator">
       <div className="display">{display}</div>
       <div className="buttons">
-        <button className="btn clear">AC</button>
+        <button onClick={handleClear} className="btn clear">AC</button>
         <button className="btn">+/-</button>
         <button className="btn">%</button>
         <button onClick={() => handleOperation('/')} className="btn operator">÷</button>
